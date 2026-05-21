@@ -2,3 +2,6 @@
 # One ticker per line. Blank lines and text after '#' are ignored.
 NBIS
 NU
+KSPI      
+TBCG    
+BGEO 
