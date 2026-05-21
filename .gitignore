@@ -1,6 +1,9 @@
 # Secrets - never commit
 .env
 
+# Runtime state (posted-article dedup store)
+posted_state.json
+
 # Python-generated files
 __pycache__/
 *.py[oc]

@@ -7,25 +7,29 @@
 
 A scheduled bot that pulls stock news from the Financial Modeling Prep (FMP)
 API for a configurable watchlist and posts, for each ticker, **one Adaptive
-Card** containing that ticker's latest 1–5 headlines into a Microsoft Teams
+Card** with that ticker's news for the current day into a Microsoft Teams
 channel via a Teams Workflows incoming webhook.
+
+A card is posted only when a ticker has articles that are new since the last
+run; if nothing changed, that ticker is skipped.
 
 Built and tested locally; next phase wraps it in a GitHub Actions cron
 workflow.
 
 ## Goals
 
-- One clean card per ticker, showing its latest 1–5 headlines as links.
-- A card for every ticker on every run (digest mode).
+- One clean card per ticker, showing up to 5 collapsible headlines from the
+  current day (Armenia time).
+- Never re-post old news — skip a ticker when it has nothing new since the
+  last run.
 - Watchlist editable without touching code.
 - Secrets never hardcoded — read from environment.
 
 ## Non-goals
 
-- No deduplication / state store — a card posts every run regardless of
-  whether the news changed.
 - No FastAPI service, Redis, or Kubernetes (overkill for a poller).
 - No sentiment analysis / sector tagging.
+- No database — the dedup store is a single small JSON file.
 
 ## Implementation
 
@@ -34,35 +38,69 @@ A single script, `news_to_teams.py`, with focused functions:
 | Area | Functions |
 |------|-----------|
 | Config | `require_env`, `load_watchlist` |
+| State | `load_state`, `save_state`, `article_key` |
+| Dates | `_parse_fmp_date`, `_pretty_date`, `_relative_date`, `_is_today` |
 | FMP | `fetch_news`, `normalize_article` |
-| Card | `build_ticker_card`, `_md_safe` |
+| Card | `build_ticker_card`, `_header_block`, `_article_block`, `_md_safe` |
 | Teams | `post_to_teams` (retries transient errors) |
 | Entry | `run`, `run_test`, `main` |
 
-Dependencies (`requests`, `python-dotenv`) are managed by `uv` via
+Dependencies (`requests`, `python-dotenv`, `tzdata`) are managed by `uv` via
 `pyproject.toml`. Run with `uv run news_to_teams.py`.
+
+## Timezone handling
+
+The team is in Armenia, so all dates shown on cards are converted to
+`Asia/Yerevan` (`DISPLAY_TZ`). FMP news timestamps carry no timezone marker
+and are assumed UTC (`FMP_SOURCE_TZ`) — confirm against a live response and
+change that one constant if needed. "Today" and recency ("3h ago") are
+computed timezone-aware, so results are identical wherever the script runs.
 
 ## Data flow
 
 1. Load `FMP_API_KEY` and `TEAMS_WEBHOOK_URL` from env (`.env` via
-   python-dotenv); read `watchlist.txt`.
+   python-dotenv); read `watchlist.txt`; load `posted_state.json`.
 2. For each ticker: `fetch_news()` calls
-   `https://financialmodelingprep.com/stable/news/stock` with `symbols` and
-   `limit`, returning normalized articles `{symbol, title, url, site,
-   published}`, newest first.
-3. `build_ticker_card()` builds one Adaptive Card: ticker name header plus up
-   to 5 headlines (each a markdown link) with a subtle `source | date` line.
-   If a ticker has no news, the card shows "No recent news."
-4. `post_to_teams()` POSTs the card; expects HTTP 200/202; retries 429/5xx
-   with backoff.
+   `https://financialmodelingprep.com/stable/news/stock` with `symbols`,
+   `from`/`to` (a yesterday-to-today window) and `limit`. Articles are
+   normalized to `{symbol, title, text, url, site, published}` and trimmed to
+   exactly the current Armenia day by `_is_today`, newest first.
+3. Articles whose key (URL + title) is already in the posted-state store are
+   dropped. If a ticker has no new articles, it is skipped (no card).
+4. `build_ticker_card()` builds one Adaptive Card from the new articles (see
+   Adaptive Card design below).
+5. `post_to_teams()` POSTs the card; expects HTTP 200/202; retries 429/5xx
+   with backoff. On success the posted articles' keys are added to the state
+   set.
+6. `save_state()` writes the day's posted-URL set back to `posted_state.json`.
+
+## Posted-state store
+
+`posted_state.json` holds `{"date": "YYYY-MM-DD", "seen": [keys]}` for the
+current day. An article's key is `URL + title` (`article_key`), so the same
+URL reused for a different headline still counts as new. On a new day, or if
+the file is missing or corrupt, the store resets to empty — so every article
+on a fresh day counts as new. Because it is scoped to one day, the file stays
+tiny.
+
+**Persistence in the cloud:** GitHub Actions runners are ephemeral, so this
+file does not survive between runs by default. The deployment must restore
+and save it — see Deployment.
 
 ## Adaptive Card design (one card per ticker)
 
-- Header — company logo (from FMP) beside the ticker name (bold, large,
-  accent colour).
-- Up to 5 articles, each: bold headline as a clickable markdown link, a short
-  summary (article text truncated to ~280 chars), then a subtle
-  `source | published date` line, separated by divider lines.
+- The card spans Teams' full width (`msteams.width: "Full"`).
+- Header — a subtle (`emphasis`), rounded-corner banner: company logo (from
+  FMP) beside the ticker name (bold, extra-large, accent colour) and a
+  subtitle.
+- Up to 5 **collapsible** articles (those new since the last run). Each
+  collapsed row is one line — ▸ chevron, headline, and a subtle recency
+  (e.g. "3h ago"). Tapping it (`Action.ToggleVisibility`) reveals a detail
+  block — summary (article text truncated to ~280 chars), a subtle
+  `source · date` line and a "Read full article" button (`Action.OpenUrl`)
+  — and flips the chevron to ▾. Articles are separated by divider lines.
+- All dates/times are shown in Armenia time (see Timezone handling).
+- Card schema version 1.5.
 
 The card is wrapped in the Teams `attachments` envelope with
 `contentType: application/vnd.microsoft.card.adaptive`.
@@ -70,11 +108,14 @@ The card is wrapped in the Teams `attachments` envelope with
 ## Error handling
 
 - Missing/empty env var → clear message, exit non-zero.
-- FMP request error / non-200 → log, treat as no news for that ticker, the
-  card shows "No recent news", continue with other tickers.
-- Teams non-2xx → retry transient errors (429, 5xx) with backoff.
+- FMP request error / non-200 → log, treat as no news for that ticker,
+  continue with other tickers.
+- Teams non-2xx → retry transient errors (429, 5xx) with backoff. A URL is
+  marked "seen" only after a successful post, so a failed card retries next
+  run.
+- Unreadable/corrupt state file → log a warning and start from an empty set.
 - `--test` flag posts one sample ticker card to verify the webhook
-  independently of FMP.
+  independently of FMP and of the state store.
 
 ## Configuration / secrets
 
@@ -84,9 +125,12 @@ The card is wrapped in the Teams `attachments` envelope with
 
 ## Deployment (next phase)
 
-- GitHub Actions workflow on a `cron` schedule (~every 15 min).
-- No state to persist between runs (no dedup store), which keeps the
-  workflow simple.
+- GitHub Actions workflow on a `cron` schedule (UTC; Armenia is UTC+4).
+- The workflow must persist `posted_state.json` between runs, otherwise the
+  dedup store resets every run and old news is re-posted. Options:
+  commit the file back to the repo each run (reliable, adds commit noise),
+  or use `actions/cache` with a rolling key (no commit noise, a rare cache
+  miss re-posts one batch). To be decided when the workflow is built.
 
 ## Security note
 

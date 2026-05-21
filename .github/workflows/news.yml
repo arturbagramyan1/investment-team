@@ -1,0 +1,47 @@
+name: News to Teams
+
+# Posts a card per ticker to Teams every 2 hours, skipping news already sent.
+on:
+  schedule:
+    - cron: "0 */2 * * *"   # every 2 hours (UTC); GitHub may delay a few minutes
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+# Runs share posted_state.json — never let two overlap.
+concurrency:
+  group: news-to-teams
+  cancel-in-progress: false
+
+jobs:
+  post-news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # Pull the dedup store from the previous run (GitHub's cache service).
+      - name: Restore dedup state
+        uses: actions/cache/restore@v4
+        with:
+          path: posted_state.json
+          key: news-state-${{ github.run_id }}
+          restore-keys: news-state-
+
+      - name: Run news bot
+        run: uv run news_to_teams.py
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+
+      # Push the updated dedup store back so the next run can read it.
+      - name: Save dedup state
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: posted_state.json
+          key: news-state-${{ github.run_id }}
