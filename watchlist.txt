@@ -1,0 +1,3 @@
+# FMP -> Teams news bot watchlist
+# One ticker per line. Blank lines and text after '#' are ignored.
+NBIS
