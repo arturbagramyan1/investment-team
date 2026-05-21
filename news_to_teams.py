@@ -56,9 +56,9 @@ FETCH_LIMIT = 12       # articles to request per ticker (extra as a buffer)
 SUMMARY_MAX_CHARS = 280  # truncate each article's summary text to this length
 REQUEST_TIMEOUT = 20   # seconds
 
-# FMP news timestamps carry no timezone marker; we assume they are UTC.
-# (If a live FMP response shows otherwise, change this one line.)
-FMP_SOURCE_TZ = ZoneInfo("UTC")
+# FMP news timestamps carry no timezone marker; a live-response check
+# confirmed they are US Eastern time (the zone shifts with US DST).
+FMP_SOURCE_TZ = ZoneInfo("America/New_York")
 # Dates shown on cards are converted to this zone — the team is in Armenia.
 DISPLAY_TZ = ZoneInfo("Asia/Yerevan")
 

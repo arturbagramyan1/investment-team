@@ -51,9 +51,9 @@ Dependencies (`requests`, `python-dotenv`, `tzdata`) are managed by `uv` via
 ## Timezone handling
 
 The team is in Armenia, so all dates shown on cards are converted to
-`Asia/Yerevan` (`DISPLAY_TZ`). FMP news timestamps carry no timezone marker
-and are assumed UTC (`FMP_SOURCE_TZ`) — confirm against a live response and
-change that one constant if needed. "Today" and recency ("3h ago") are
+`Asia/Yerevan` (`DISPLAY_TZ`). FMP news timestamps carry no timezone marker;
+a live-response check confirmed they are US Eastern time, so they are tagged
+`America/New_York` (`FMP_SOURCE_TZ`). "Today" and recency ("3h ago") are
 computed timezone-aware, so results are identical wherever the script runs.
 
 ## Data flow
