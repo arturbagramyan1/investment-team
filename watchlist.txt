@@ -7,8 +7,7 @@ NBIS
 NU
 
 # Uranium
-KAP      # verify on FMP — Kazatomprom usually lists as KAP.L (LSE)
-URA
+KAP.L   # verify on FMP — Kazatomprom usually lists as KAP.L (LSE)
 UEC
 
 # Banks
@@ -19,7 +18,7 @@ KSPI
 # Electrification
 ROK
 ETN
-4SU      # verify on FMP — German listing, likely needs a suffix (e.g. 4SU.DE)
+SU.PA    # verify on FMP — German listing, likely needs a suffix (e.g. 4SU.DE)
 EMR
 
 # Quantum tech
