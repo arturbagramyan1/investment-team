@@ -11,8 +11,8 @@ KAP.L   # verify on FMP — Kazatomprom usually lists as KAP.L (LSE)
 UEC
 
 # Banks
-BGEO
-TBCG
+BGEO.L
+TBCG.L
 KSPI
 
 # Electrification
