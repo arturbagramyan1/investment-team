@@ -1,7 +1,40 @@
 # FMP -> Teams news bot watchlist
 # One ticker per line. Blank lines and text after '#' are ignored.
+# Category labels below are comments — the bot only reads the ticker.
+
+# Core
 NBIS
 NU
-KSPI      
-TBCG    
-BGEO 
+
+# Uranium
+KAP      # verify on FMP — Kazatomprom usually lists as KAP.L (LSE)
+URA
+UEC
+
+# Banks
+BGEO
+TBCG
+KSPI
+
+# Electrification
+ROK
+ETN
+4SU      # verify on FMP — German listing, likely needs a suffix (e.g. 4SU.DE)
+EMR
+
+# Quantum tech
+ORCL
+TSEM
+QTUM
+IONQ
+INTC
+QBTS
+RGTI
+
+# Financials
+BN
+AMP
+BLK
+
+# Other
+GRAB
