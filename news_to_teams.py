@@ -219,24 +219,14 @@ def _pretty_date(raw: str) -> str:
     return parsed.astimezone(DISPLAY_TZ).strftime("%b %d · %H:%M")
 
 
-def _relative_date(raw: str) -> str:
-    """Format an FMP timestamp relative to now, e.g. '3h ago', '2d ago'.
-    Older than a week falls back to an Armenia-time 'Mon DD' date. The result
-    is the same wherever the script runs, since the maths is timezone-aware."""
+def _clock_time(raw: str) -> str:
+    """The article's publish time in Armenia time as 'HH:MM'. Unlike a
+    relative 'Xh ago', an absolute time never goes stale on a posted card
+    (Adaptive Cards do not refresh). '' if the timestamp can't be parsed."""
     parsed = _parse_fmp_date(raw)
     if parsed is None:
-        return raw.strip()
-    delta = datetime.now(tz=FMP_SOURCE_TZ) - parsed
-    secs = delta.total_seconds()
-    if secs < 60:
-        return "just now"
-    if secs < 3600:
-        return f"{int(secs // 60)}m ago"
-    if secs < 86400:
-        return f"{int(secs // 3600)}h ago"
-    if delta.days < 7:
-        return f"{delta.days}d ago"
-    return parsed.astimezone(DISPLAY_TZ).strftime("%b %d")
+        return ""
+    return parsed.astimezone(DISPLAY_TZ).strftime("%H:%M")
 
 
 def _is_today(raw: str) -> bool:
@@ -249,8 +239,9 @@ def _is_today(raw: str) -> bool:
     return parsed.astimezone(DISPLAY_TZ).date() == today
 
 
-def _header_block(symbol: str, subtitle: str) -> dict:
-    """Tinted banner: company logo beside the ticker name and a subtitle."""
+def _header_block(symbol: str, subtitle: str, stamp: str) -> dict:
+    """Tinted banner: company logo, the ticker name with a subtitle, and the
+    card's post date/time at the right."""
     return {
         "type": "Container",
         "style": HEADER_STYLE,
@@ -291,6 +282,19 @@ def _header_block(symbol: str, subtitle: str) -> dict:
                             "spacing": "None",
                         },
                     ],
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "verticalContentAlignment": "Center",
+                    "items": [{
+                        "type": "TextBlock",
+                        "text": stamp,
+                        "isSubtle": True,
+                        "size": "Small",
+                        "horizontalAlignment": "Right",
+                        "wrap": False,
+                    }],
                 },
             ],
         }],
@@ -385,15 +389,15 @@ def _article_block(article: dict, index: int) -> dict:
         },
     ]
 
-    recency = _relative_date(article["published"])
-    if recency:
+    when = _clock_time(article["published"])
+    if when:
         headline_columns.append({
             "type": "Column",
             "width": "auto",
             "verticalContentAlignment": "Center",
             "items": [{
                 "type": "TextBlock",
-                "text": recency,
+                "text": when,
                 "isSubtle": True,
                 "size": "Small",
                 "horizontalAlignment": "Right",
@@ -416,12 +420,15 @@ def _article_block(article: dict, index: int) -> dict:
     }
 
 
-def build_ticker_card(symbol: str, articles: list[dict]) -> dict:
+def build_ticker_card(symbol: str, articles: list[dict],
+                      posted_at: datetime) -> dict:
     """Build one Teams webhook payload: a card with up to NEWS_PER_CARD
-    headlines for a single ticker."""
+    headlines for a single ticker. `posted_at` (Armenia time) is stamped on
+    the card header."""
     items = articles[:NEWS_PER_CARD]
     subtitle = "Tap a headline to expand" if items else "Latest stock news"
-    body: list[dict] = [_header_block(symbol, subtitle)]
+    stamp = posted_at.strftime("%b %d · %H:%M")
+    body: list[dict] = [_header_block(symbol, subtitle, stamp)]
 
     if not items:
         body.append({
@@ -505,7 +512,8 @@ def run_test() -> None:
          "site": "news-bot", "published": today},
     ]
     log("Posting a test card to Teams...")
-    ok = post_to_teams(build_ticker_card("NBIS", sample), webhook_url)
+    card = build_ticker_card("NBIS", sample, datetime.now(DISPLAY_TZ))
+    ok = post_to_teams(card, webhook_url)
     log("Test card posted." if ok else "Test card FAILED.")
     sys.exit(0 if ok else 1)
 
@@ -519,6 +527,7 @@ def run() -> None:
     tickers = load_watchlist()
     state = load_state()
     seen = state["seen"]
+    posted_at = datetime.now(DISPLAY_TZ)
 
     posted = skipped = 0
     for symbol in tickers:
@@ -532,7 +541,8 @@ def run() -> None:
 
         log(f"  {len(fresh)} new article(s); posting card with up to "
             f"{NEWS_PER_CARD}.")
-        if post_to_teams(build_ticker_card(symbol, fresh), webhook_url):
+        card = build_ticker_card(symbol, fresh, posted_at)
+        if post_to_teams(card, webhook_url):
             posted += 1
             seen.update(article_key(a) for a in fresh)  # mark only on success
         else:

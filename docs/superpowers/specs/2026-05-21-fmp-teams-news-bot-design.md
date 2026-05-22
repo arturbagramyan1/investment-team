@@ -39,7 +39,7 @@ A single script, `news_to_teams.py`, with focused functions:
 |------|-----------|
 | Config | `require_env`, `load_watchlist` |
 | State | `load_state`, `save_state`, `article_key` |
-| Dates | `_parse_fmp_date`, `_pretty_date`, `_relative_date`, `_is_today` |
+| Dates | `_parse_fmp_date`, `_pretty_date`, `_clock_time`, `_is_today` |
 | FMP | `fetch_news`, `normalize_article` |
 | Card | `build_ticker_card`, `_header_block`, `_article_block`, `_md_safe` |
 | Teams | `post_to_teams` (retries transient errors) |
@@ -53,8 +53,10 @@ Dependencies (`requests`, `python-dotenv`, `tzdata`) are managed by `uv` via
 The team is in Armenia, so all dates shown on cards are converted to
 `Asia/Yerevan` (`DISPLAY_TZ`). FMP news timestamps carry no timezone marker;
 a live-response check confirmed they are US Eastern time, so they are tagged
-`America/New_York` (`FMP_SOURCE_TZ`). "Today" and recency ("3h ago") are
+`America/New_York` (`FMP_SOURCE_TZ`). "Today" and all displayed times are
 computed timezone-aware, so results are identical wherever the script runs.
+Times shown on cards are absolute (`HH:MM`), never relative — a posted
+Adaptive Card is static, so a relative "Xh ago" would silently go stale.
 
 ## Data flow
 
@@ -91,11 +93,11 @@ and save it — see Deployment.
 
 - The card spans Teams' full width (`msteams.width: "Full"`).
 - Header — a subtle (`emphasis`), rounded-corner banner: company logo (from
-  FMP) beside the ticker name (bold, extra-large, accent colour) and a
-  subtitle.
+  FMP), the ticker name (bold, extra-large, accent colour) with a subtitle,
+  and the card's post date/time (Armenia time) at the right.
 - Up to 5 **collapsible** articles (those new since the last run). Each
-  collapsed row is one line — ▸ chevron, headline, and a subtle recency
-  (e.g. "3h ago"). Tapping it (`Action.ToggleVisibility`) reveals a detail
+  collapsed row is one line — ▸ chevron, headline, and the article's publish
+  time (`HH:MM`, Armenia). Tapping it (`Action.ToggleVisibility`) reveals a detail
   block — summary (article text truncated to ~280 chars), a subtle
   `source · date` line and a "Read full article" button (`Action.OpenUrl`)
   — and flips the chevron to ▾. Articles are separated by divider lines.
