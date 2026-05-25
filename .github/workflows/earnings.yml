@@ -1,0 +1,44 @@
+name: Earnings to ICS
+
+# Regenerates earnings.ics from the watchlist once a day and commits any
+# change so Outlook's subscription always sees fresh data.
+on:
+  schedule:
+    - cron: "0 6 * * *"     # 06:00 UTC daily (GitHub may delay a few minutes)
+  workflow_dispatch:          # manual trigger from the Actions tab
+
+concurrency:
+  group: earnings-to-ics
+  cancel-in-progress: false
+
+permissions:
+  contents: write             # needed to commit the regenerated earnings.ics
+
+jobs:
+  build-ics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Generate earnings.ics
+        run: uv run earnings_to_ics.py
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- earnings.ics; then
+            echo "No changes to earnings.ics."
+          else
+            git add earnings.ics
+            git commit -m "chore: refresh earnings.ics [skip ci]"
+            git push
+          fi

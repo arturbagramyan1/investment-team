@@ -170,6 +170,13 @@ def build_event(symbol: str, row: dict, dtstamp: str) -> list[str]:
         f"SUMMARY:{_ics_escape(summary)}",
         f"DESCRIPTION:{description}",
         "TRANSP:TRANSPARENT",
+        # Reminder: 15 hours before event start (event starts at 00:00 of
+        # the date, so this fires around 09:00 the day before).
+        "BEGIN:VALARM",
+        "TRIGGER:-PT15H",
+        "ACTION:DISPLAY",
+        f"DESCRIPTION:{_ics_escape(summary)} tomorrow",
+        "END:VALARM",
         "END:VEVENT",
     ]
     return [_fold_line(line) for line in lines]
