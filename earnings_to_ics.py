@@ -20,6 +20,7 @@ Secrets are read from environment variables (.env is loaded if present):
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from datetime import date, datetime, timedelta, timezone
@@ -38,6 +39,7 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent
 WATCHLIST_FILE = BASE_DIR / "watchlist.txt"
 OUTPUT_FILE = BASE_DIR / "earnings.ics"
+OUTPUT_JSON = BASE_DIR / "earnings.json"
 
 FMP_EARNINGS_URL = "https://financialmodelingprep.com/stable/earnings"
 
@@ -182,6 +184,30 @@ def build_event(symbol: str, row: dict, dtstamp: str) -> list[str]:
     return [_fold_line(line) for line in lines]
 
 
+def write_events_json(events_rows: list[tuple[str, dict]]) -> None:
+    """Write a sidecar earnings.json with the same structured data, so
+    other workflows (e.g. the Teams reminder) can read it instead of
+    re-hitting the FMP API."""
+    payload = {
+        "generated_at": datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z"),
+        "events": [
+            {
+                "symbol": symbol,
+                "date": row["_date"].isoformat(),
+                "epsEstimated": row.get("epsEstimated"),
+                "revenueEstimated": row.get("revenueEstimated"),
+            }
+            for symbol, row in events_rows
+        ],
+    }
+    OUTPUT_JSON.write_text(
+        json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+    )
+
+
 def build_calendar(events_rows: list[tuple[str, dict]]) -> str:
     dtstamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out = [
@@ -214,7 +240,8 @@ def run_test() -> None:
     ]
     ics = build_calendar(fake)
     OUTPUT_FILE.write_text(ics, encoding="utf-8", newline="")
-    log(f"Wrote {len(fake)} test event(s) to {OUTPUT_FILE}")
+    write_events_json(fake)
+    log(f"Wrote {len(fake)} test event(s) to {OUTPUT_FILE} and {OUTPUT_JSON}")
 
 
 def run() -> None:
@@ -235,7 +262,8 @@ def run() -> None:
 
     ics = build_calendar(all_events)
     OUTPUT_FILE.write_text(ics, encoding="utf-8", newline="")
-    log(f"Wrote {len(all_events)} event(s) to {OUTPUT_FILE}")
+    write_events_json(all_events)
+    log(f"Wrote {len(all_events)} event(s) to {OUTPUT_FILE} and {OUTPUT_JSON}")
 
 
 def main() -> None:

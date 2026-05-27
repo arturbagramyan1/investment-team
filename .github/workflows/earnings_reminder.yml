@@ -1,0 +1,31 @@
+name: Earnings Reminder to Teams
+
+# Posts a Teams card the morning before each ticker's earnings.
+# Reads earnings.json (produced by the Earnings to ICS workflow at 06:00 UTC)
+# so it doesn't hit FMP again. Runs 15 min later to give that workflow time
+# to finish and push.
+on:
+  schedule:
+    - cron: "15 6 * * *"   # 06:15 UTC = 10:15 Yerevan
+  workflow_dispatch:
+
+concurrency:
+  group: earnings-reminder-to-teams
+  cancel-in-progress: false
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Post reminder cards
+        run: uv run earnings_reminder_to_teams.py
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
