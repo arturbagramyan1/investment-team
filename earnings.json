@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T10:01:22Z",
+  "generated_at": "2026-05-28T07:31:35Z",
   "events": [
     {
       "symbol": "NBIS",
@@ -10,7 +10,7 @@
     {
       "symbol": "NU",
       "date": "2026-08-13",
-      "epsEstimated": 0.21,
+      "epsEstimated": 0.2,
       "revenueEstimated": 5402200000
     },
     {
@@ -46,8 +46,8 @@
     {
       "symbol": "KSPI",
       "date": "2026-08-05",
-      "epsEstimated": 2.89,
-      "revenueEstimated": 2368571000
+      "epsEstimated": 2.85,
+      "revenueEstimated": 2334911000
     },
     {
       "symbol": "ROK",
@@ -58,7 +58,7 @@
     {
       "symbol": "ETN",
       "date": "2026-08-04",
-      "epsEstimated": 3.08,
+      "epsEstimated": 3.07,
       "revenueEstimated": 8155523000
     },
     {
@@ -113,7 +113,7 @@
       "symbol": "BN",
       "date": "2026-08-06",
       "epsEstimated": 0.65,
-      "revenueEstimated": 1662859000
+      "revenueEstimated": 1664239000
     },
     {
       "symbol": "BN",
@@ -147,9 +147,9 @@
     },
     {
       "symbol": "CRM",
-      "date": "2026-05-27",
-      "epsEstimated": 3.12,
-      "revenueEstimated": 11053310000
+      "date": "2026-09-02",
+      "epsEstimated": 3.23,
+      "revenueEstimated": 11344940000
     },
     {
       "symbol": "PYPL",
