@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-12T07:27:52Z",
+  "generated_at": "2026-08-13T07:37:52Z",
   "events": [
     {
       "symbol": "NBIS",
-      "date": "2026-08-12",
-      "epsEstimated": -0.71695,
-      "revenueEstimated": 569890200
+      "date": "2026-11-10",
+      "epsEstimated": -0.95,
+      "revenueEstimated": 885392100
     },
     {
       "symbol": "NU",
@@ -59,7 +59,7 @@
       "symbol": "EMR",
       "date": "2026-11-04",
       "epsEstimated": 1.83,
-      "revenueEstimated": 5101174000
+      "revenueEstimated": 5099974000
     },
     {
       "symbol": "ORCL",
@@ -70,8 +70,8 @@
     {
       "symbol": "TSEM",
       "date": "2026-11-09",
-      "epsEstimated": 1.05,
-      "revenueEstimated": 522768200
+      "epsEstimated": 1.08,
+      "revenueEstimated": 522372700
     },
     {
       "symbol": "IONQ",
@@ -83,7 +83,7 @@
       "symbol": "INTC",
       "date": "2026-10-22",
       "epsEstimated": 0.39,
-      "revenueEstimated": 16309860000
+      "revenueEstimated": 16310220000
     },
     {
       "symbol": "QBTS",
@@ -113,7 +113,7 @@
       "symbol": "AMP",
       "date": "2026-10-29",
       "epsEstimated": 11.78,
-      "revenueEstimated": 5057088000
+      "revenueEstimated": 5080368000
     },
     {
       "symbol": "BLK",
@@ -137,13 +137,13 @@
       "symbol": "CRM",
       "date": "2026-08-26",
       "epsEstimated": 3.28,
-      "revenueEstimated": 11331190000
+      "revenueEstimated": 11330930000
     },
     {
       "symbol": "PYPL",
       "date": "2026-10-27",
       "epsEstimated": 1.32,
-      "revenueEstimated": 8711278000
+      "revenueEstimated": 8714820000
     }
   ]
 }
