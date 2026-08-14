@@ -1,17 +1,11 @@
 {
-  "generated_at": "2026-08-13T07:37:52Z",
+  "generated_at": "2026-08-14T07:27:33Z",
   "events": [
     {
       "symbol": "NBIS",
       "date": "2026-11-10",
       "epsEstimated": -0.95,
       "revenueEstimated": 885392100
-    },
-    {
-      "symbol": "NU",
-      "date": "2026-08-13",
-      "epsEstimated": 0.1984,
-      "revenueEstimated": 5385810000
     },
     {
       "symbol": "KAP.L",
@@ -29,7 +23,7 @@
       "symbol": "BGEO.L",
       "date": "2026-11-04",
       "epsEstimated": 3.92,
-      "revenueEstimated": 343495500
+      "revenueEstimated": 352977200
     },
     {
       "symbol": "TBCG.L",
@@ -40,8 +34,8 @@
     {
       "symbol": "KSPI",
       "date": "2026-10-26",
-      "epsEstimated": 3.3,
-      "revenueEstimated": 2709587000
+      "epsEstimated": 3.36,
+      "revenueEstimated": 2700047000
     },
     {
       "symbol": "ROK",
@@ -65,7 +59,7 @@
       "symbol": "ORCL",
       "date": "2026-09-08",
       "epsEstimated": 1.72,
-      "revenueEstimated": 19126460000
+      "revenueEstimated": 19130550000
     },
     {
       "symbol": "TSEM",
@@ -99,14 +93,8 @@
     },
     {
       "symbol": "BN",
-      "date": "2026-08-13",
-      "epsEstimated": 0.617,
-      "revenueEstimated": 1660350000
-    },
-    {
-      "symbol": "BN",
-      "date": "2026-11-10",
-      "epsEstimated": 0.712,
+      "date": "2026-11-12",
+      "epsEstimated": 0.78,
       "revenueEstimated": 1923676000
     },
     {
@@ -143,7 +131,7 @@
       "symbol": "PYPL",
       "date": "2026-10-27",
       "epsEstimated": 1.32,
-      "revenueEstimated": 8714820000
+      "revenueEstimated": 8716815000
     }
   ]
 }
