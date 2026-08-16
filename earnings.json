@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-08-15T06:41:13Z",
+  "generated_at": "2026-08-16T06:42:56Z",
   "events": [
     {
       "symbol": "NBIS",
       "date": "2026-11-10",
-      "epsEstimated": -0.80262,
+      "epsEstimated": -0.7908,
       "revenueEstimated": 918231300
     },
     {
       "symbol": "NU",
       "date": "2026-11-12",
       "epsEstimated": 0.22,
-      "revenueEstimated": 5890238000
+      "revenueEstimated": 5571139000
     },
     {
       "symbol": "KAP.L",
@@ -39,14 +39,14 @@
     },
     {
       "symbol": "KSPI",
-      "date": "2026-11-09",
-      "epsEstimated": 3.22,
-      "revenueEstimated": 2695019000
+      "date": "2026-10-26",
+      "epsEstimated": 3.15,
+      "revenueEstimated": 2639729000
     },
     {
       "symbol": "ROK",
       "date": "2026-11-05",
-      "epsEstimated": 3.7,
+      "epsEstimated": 3.66,
       "revenueEstimated": 2398382000
     },
     {
@@ -76,7 +76,7 @@
     {
       "symbol": "IONQ",
       "date": "2026-11-04",
-      "epsEstimated": -0.18,
+      "epsEstimated": -0.3126,
       "revenueEstimated": 71662560
     },
     {
