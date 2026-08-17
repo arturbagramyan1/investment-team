@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-08-16T06:42:56Z",
+  "generated_at": "2026-08-17T06:59:47Z",
   "events": [
     {
       "symbol": "NBIS",
       "date": "2026-11-10",
-      "epsEstimated": -0.7908,
+      "epsEstimated": -0.7,
       "revenueEstimated": 918231300
     },
     {
       "symbol": "NU",
       "date": "2026-11-12",
       "epsEstimated": 0.22,
-      "revenueEstimated": 5571139000
+      "revenueEstimated": 5890238000
     },
     {
       "symbol": "KAP.L",
@@ -28,8 +28,8 @@
     {
       "symbol": "BGEO.L",
       "date": "2026-11-04",
-      "epsEstimated": 3.92,
-      "revenueEstimated": 353229000
+      "epsEstimated": 3.93,
+      "revenueEstimated": 353364400
     },
     {
       "symbol": "TBCG.L",
@@ -40,7 +40,7 @@
     {
       "symbol": "KSPI",
       "date": "2026-10-26",
-      "epsEstimated": 3.15,
+      "epsEstimated": 3.3,
       "revenueEstimated": 2639729000
     },
     {
