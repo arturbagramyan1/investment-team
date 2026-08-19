@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T06:47:14Z",
+  "generated_at": "2026-08-19T06:48:12Z",
   "events": [
     {
       "symbol": "NBIS",
@@ -29,7 +29,7 @@
       "symbol": "BGEO.L",
       "date": "2026-11-04",
       "epsEstimated": 3.91,
-      "revenueEstimated": 352215300
+      "revenueEstimated": 352012200
     },
     {
       "symbol": "TBCG.L",
@@ -46,7 +46,7 @@
     {
       "symbol": "ROK",
       "date": "2026-11-05",
-      "epsEstimated": 3.67,
+      "epsEstimated": 3.68,
       "revenueEstimated": 2400105000
     },
     {
@@ -101,7 +101,7 @@
       "symbol": "BN",
       "date": "2026-11-12",
       "epsEstimated": 0.712,
-      "revenueEstimated": 1865471000
+      "revenueEstimated": 1811300000
     },
     {
       "symbol": "AMP",
@@ -131,7 +131,7 @@
       "symbol": "CRM",
       "date": "2026-08-26",
       "epsEstimated": 3.27,
-      "revenueEstimated": 11330340000
+      "revenueEstimated": 11332000000
     },
     {
       "symbol": "PYPL",
