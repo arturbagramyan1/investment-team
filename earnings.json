@@ -1,23 +1,17 @@
 {
-  "generated_at": "2026-08-21T06:51:46Z",
+  "generated_at": "2026-08-22T06:42:50Z",
   "events": [
     {
       "symbol": "NBIS",
       "date": "2026-11-10",
       "epsEstimated": -0.68,
-      "revenueEstimated": 919436500
+      "revenueEstimated": 918231300
     },
     {
       "symbol": "NU",
       "date": "2026-11-12",
       "epsEstimated": 0.22,
       "revenueEstimated": 5890238000
-    },
-    {
-      "symbol": "KAP.L",
-      "date": "2026-08-21",
-      "epsEstimated": 1.02,
-      "revenueEstimated": 644972700000
     },
     {
       "symbol": "UEC",
@@ -28,8 +22,8 @@
     {
       "symbol": "BGEO.L",
       "date": "2026-11-04",
-      "epsEstimated": 3.9,
-      "revenueEstimated": 350612000
+      "epsEstimated": 3.89,
+      "revenueEstimated": 350140100
     },
     {
       "symbol": "TBCG.L",
@@ -41,19 +35,19 @@
       "symbol": "KSPI",
       "date": "2026-10-26",
       "epsEstimated": 3.3,
-      "revenueEstimated": 2720159000
+      "revenueEstimated": 2745299000
     },
     {
       "symbol": "ROK",
       "date": "2026-11-05",
       "epsEstimated": 3.67,
-      "revenueEstimated": 2400105000
+      "revenueEstimated": 2399836000
     },
     {
       "symbol": "ETN",
       "date": "2026-11-03",
       "epsEstimated": 3.52,
-      "revenueEstimated": 8474965000
+      "revenueEstimated": 8475085000
     },
     {
       "symbol": "EMR",
@@ -89,7 +83,7 @@
       "symbol": "QBTS",
       "date": "2026-11-05",
       "epsEstimated": -0.09,
-      "revenueEstimated": 4157733
+      "revenueEstimated": 4159600
     },
     {
       "symbol": "RGTI",
@@ -100,8 +94,8 @@
     {
       "symbol": "BN",
       "date": "2026-11-12",
-      "epsEstimated": 0.707,
-      "revenueEstimated": 1820101000
+      "epsEstimated": 0.708,
+      "revenueEstimated": 1823119000
     },
     {
       "symbol": "AMP",
@@ -125,7 +119,7 @@
       "symbol": "KDDIY",
       "date": "2026-11-05",
       "epsEstimated": 0.3222,
-      "revenueEstimated": 9800791000
+      "revenueEstimated": 9810232000
     },
     {
       "symbol": "CRM",
@@ -137,7 +131,7 @@
       "symbol": "PYPL",
       "date": "2026-10-27",
       "epsEstimated": 1.32,
-      "revenueEstimated": 8722639000
+      "revenueEstimated": 8722646000
     }
   ]
 }
