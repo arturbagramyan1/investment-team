@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-23T06:44:17Z",
+  "generated_at": "2026-08-24T07:02:56Z",
   "events": [
     {
       "symbol": "NBIS",
@@ -100,7 +100,7 @@
     {
       "symbol": "AMP",
       "date": "2026-10-29",
-      "epsEstimated": 11.78,
+      "epsEstimated": 11.8,
       "revenueEstimated": 5090226000
     },
     {
